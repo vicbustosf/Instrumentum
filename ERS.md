@@ -1,7 +1,7 @@
 Instrumentum
 
 El sistema Instrumentum opera como una plataforma de gestión integral basada en una arquitectura de capas, diseñada para centralizar la información técnica de músicos y optimizar su rendimiento en vivo y en estudio. Su comportamiento se desglosa en los siguientes núcleos operativos:
-
+------------------------------------------------------------------
 Descripción del Comportamiento del Sistema:
 * Gestión de Identidad y Aislamiento de Datos
   - El sistema implementa un entorno de seguridad basado en Spring Security y BCrypt para garantizar que cada músico trabaje en un espacio privado.
@@ -29,7 +29,7 @@ Descripción del Comportamiento del Sistema:
 * Procesamiento y Visualización de la Interfaz
   - El sistema utiliza el motor de plantillas Thymeleaf para el renderizado del lado del servidor, optimizando la entrega de contenido HTML ya procesado al navegador.
   - Comportamiento Responsive: Gracias a la integración de Bootstrap, la interfaz ajusta su disposición de forma automática, permitiendo que la consulta de los Technical Riders sea tan eficiente en un smartphone como en una estación de trabajo de estudio.
-
+-----------------------------------------------------------------
 Requisitos Funcionales (RF)
 - RF-01: Gestión de Inventario de Equipos: CRUD completo de equipos (instrumentos, amplificadores, pedales). Atributos específicos: maderas y pastillas para instrumentos; voltaje (9V/12V), consumo (mA) y circuito para electrónica.
 - RF-02: Módulo de Mantenimiento Preventivo: Bitácora de servicios asociada a equipos específicos. Alerta visual para equipos sin mantenimiento en más de 6 meses.
@@ -39,6 +39,7 @@ Requisitos Funcionales (RF)
 - RF-06: Gestión de Usuarios: Registro y autenticación mediante BCrypt para asegurar el aislamiento de datos entre usuarios.
 - RF-07: Búsqueda y Filtros: Búsqueda por metadatos (nombre, tipo, marca) y filtrado de equipos en estado de mantenimiento pendiente.
 
+---------------------------------------------------------------
 
 Requisitos No Funcionales (RNF)
 - RNF-01: Tecnología: Desarrollo en Java 21 con Spring Boot 4.0.5. Persistencia mediante Spring Data JPA sobre MySQL (gestionado vía XAMPP). Interfaz con Thymeleaf(Motor de plantillas Springboot Java del lado del servidor, para renderizar archivos HTML) y Bootstrap(framework front-end para el desarrollo web responsivo (adaptable a móviles)).
@@ -50,54 +51,4 @@ Requisitos No Funcionales (RNF)
 - RNF-07: Integridad de Datos: Configuración de eliminación en cascada para mantenimientos y restricciones para proteger equipos asignados a canciones activas.
 
 
-Riesgos Críticos (Impacto Alto)
 
-R01 | Incompatibilidad de Versión (Spring Boot 4.0.5)
-* Categoría: Técnico
-* Probabilidad: Media
-* Impacto: Alto
-* Mitigación: Realizar una prueba de concepto inicial (PoC) para validar que las dependencias de **Jakarta Persistence** y el driver de **MySQL** operen sin conflictos en la nueva versión de Spring.
-
-R02 | Desconexión del Motor de Base de Datos (MySQL/XAMPP)**
-* Categoría: Infraestructura Local
-* Probabilidad: Media
-* Impacto: Alto
-* Mitigación: Configurar un HealthCheck en Spring para monitorear el estado de la conexión y asegurar que el servicio de MySQL en el panel de XAMPP esté iniciado antes del despliegue del .jar.
-
-R03 | Brecha de Seguridad en Aislamiento de Datos
-* Categoría: Seguridad
-* Probabilidad:** Baja
-* Impacto:** Crítico
-* Mitigación: Implementar cláusulas WHERE user_id = :current_user en todos los métodos del repositorio de Spring Data JPA para evitar que un usuario visualice el inventario de otro.
-
----
-
-Riesgos Moderados (Impacto Medio)
-
-R04 | Error en Algoritmo de Cálculo de Carga (RF-05)**
-* Categoría: Funcional
-* Probabilidad: Baja
-* Impacto: Medio
-* Mitigación: Desarrollar una suite de pruebas unitarias con JUnit 5 (framework de pruebas) que testee casos de borde (ej: pedales sin amperaje definido o sumas que exceden el límite de la fuente).
-
-R05 | Inconsistencia por Eliminación en Cascada (RNF-07)
-* Categoría: Integridad de Datos
-* Probabilidad: Baja
-* Impacto: Alto
-* Mitigación: Aplicar la anotación @OnDelete(action = OnDeleteAction.CASCADE) únicamente en los logs de mantenimiento, protegiendo con restricciones de clave foránea los equipos vinculados a canciones.
-
----
-
-Riesgos Operacionales (Impacto Bajo)
-
-R06 | Latencia en el Motor de Plantillas (Thymeleaf)
-* Categoría: Rendimiento
-* Probabilidad: Media
-* Impacto: Bajo
-* Mitigación: Evitar el procesamiento de bucles anidados complejos dentro de los archivos .html y asignar el procesamiento de datos pesado a la capa de Service en Java.
-
-R07 | Fallas en Generación de Technical Rider (RF-04)
-* Categoría: Funcional
-* Probabilidad: Media
-* Impacto: Medio
-* Mitigación: Validar los campos de texto antes de la exportación para evitar caracteres especiales que corrompan el formato del archivo final (PDF/Texto).
