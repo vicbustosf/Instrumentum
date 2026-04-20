@@ -55,7 +55,7 @@ Requisitos No Funcionales (RNF)
 RNF-01: Tecnología
 
 · Backend: Java 17+ con Spring Boot 3
-· Persistencia: Spring Data JPA + PostgreSQL
+· Persistencia: Spring Data JPA + MariaDB
 · Frontend: Thymeleaf (integrado) o React (API desacoplada)
 
 RNF-02: Rendimiento
