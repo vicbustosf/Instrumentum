@@ -35,24 +35,32 @@ public class AuthServiceTest {
 
     @Test
     public void registrarUsuarioTest() {
+        // 1. Arrange (Preparar)
         Usuario usuarioInput = new Usuario();
         usuarioInput.setNombreUsuario("diego.valdes");
         usuarioInput.setContrasena("rawPassword123");
-        usuarioInput.setCorreo("diego@instrumentum.cl");
+        usuarioInput.setCorreo("diego.valdes@instrumentum.cl");
 
-        String passwordEncriptada = "$2a$10$EncryptedPasswordStringHere";
+        String passwordEncriptada = "hashedPassword123";
+
+        // NUEVO: Simulamos que el usuario NO existe para pasar la nueva regla de negocio
+        when(usuarioRepo.findByNombreUsuario("diego.valdes")).thenReturn(Optional.empty());
         
         when(passwordEncoder.encode("rawPassword123")).thenReturn(passwordEncriptada);
-        when(usuarioRepo.save(any(Usuario.class))).thenReturn(usuarioInput);
+        when(usuarioRepo.save(usuarioInput)).thenReturn(usuarioInput);
 
-        String resultado = authService.registrar(usuarioInput);
+        // 2. Act (Ejecutar)
+        // CORRECCIÓN: Ahora recibimos un objeto Usuario, no un String
+        Usuario resultado = authService.registrar(usuarioInput);
 
-        assertEquals("Usuario registrado", resultado);
-        assertEquals(passwordEncriptada, usuarioInput.getContrasena());
+        // 3. Assert (Verificar)
+        assertNotNull(resultado, "El usuario retornado no debería ser nulo");
+        assertEquals(passwordEncriptada, resultado.getContrasena(), "La contraseña debería estar encriptada");
+        
+        verify(usuarioRepo).findByNombreUsuario("diego.valdes"); // Verifica que se validó la existencia
         verify(passwordEncoder).encode("rawPassword123");
         verify(usuarioRepo).save(usuarioInput);
     }
-
     @Test
     public void loginUsuarioTest() {
         String nombreUsuario = "diego.valdes";

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
+    
     @Autowired 
     private UsuarioRepository usuarioRepo;
 
@@ -20,11 +21,14 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-    public String registrar(Usuario usuario) {
+    public Usuario registrar(Usuario usuario) {
+        // Regla de negocio: Evitar error 500 si el username ya está ocupado
+        if (usuarioRepo.findByNombreUsuario(usuario.getNombreUsuario()).isPresent()) {
+            throw new RuntimeException("El nombre de usuario '" + usuario.getNombreUsuario() + "' ya se encuentra en uso.");
+        }
+        
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
-        usuarioRepo.save(usuario);
-        return "Usuario registrado";
+        return usuarioRepo.save(usuario);
     }
 
     public String login(String username, String password){

@@ -108,6 +108,11 @@ spring:
             - AuthFilter
 
         # --- Rutas Docs ---
+        - id: auth-docs
+          uri: http://localhost:8089
+          predicates:
+            - Path=/auth/api-docs
+            
         - id: logistica-docs
           uri: http://localhost:8090
           predicates:
@@ -165,6 +170,9 @@ eureka:
 springdoc:
   swagger-ui:
     urls:
+      - name: Servicio Auth
+        url: /auth/api-docs
+
       - name: Servicio Logistica
         url: /v2/api-docs/logistica
 
